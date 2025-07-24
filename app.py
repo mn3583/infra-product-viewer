@@ -58,9 +58,5 @@ with tab2:
     else:
         st.info("No results to display.")
 
-# Footer
-st.markdown("---")
-st.markdown("Built with ❤️ using Streamlit")
-
 
 
