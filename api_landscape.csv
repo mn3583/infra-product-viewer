@@ -1,0 +1,7 @@
+Product,Category,Infra Used,Infra Category,Notes
+Daylight,Fintech,Synapse,Banking-as-a-Service,Niche digital banking product built on Synapse infra
+Butter,Collaboration,Agora SDK,Real-time Video,Workshop UX tool built on video infra
+Beem,AR/Comms,Agora SDK + WebRTC,Comms SDK,Augmented reality collaboration powered by embedded video infra
+Phantom,Crypto,Solana + NFT APIs,Blockchain,Abstracts crypto wallets into smooth UX
+Linear,Dev Tools,Vercel + GraphQL API,Hosting + API infra,Premium UX on top of modern dev infra
+CustomGPT,AI Utility,OpenAI API,LLM API,Consumer-facing tool built on OpenAI's API
