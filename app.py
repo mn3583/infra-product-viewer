@@ -1,28 +1,41 @@
+import streamlit as st
 import pandas as pd
-
-# Load the CSV
-df = pd.read_csv('api_landscape.csv')
-
-# Preview the data
-df.head()
-
-# Check column names and data types
-df.info()
-
-# Check for any nulls
-df.isnull().sum()
-
-
 import plotly.express as px
 
-# Bar chart: Number of products per infra category
-fig = px.bar(df, x='Infra Category', title='Products per Infra Category')
-fig.show()
-# Filter for a specific infra category
-selected_infra = 'Blockchain'  # <- Try changing this to 'Comms SDK', etc.
+# Load your data
+df = pd.read_csv("api_landscape.csv")
 
-filtered_df = df[df['Infra Category'] == selected_infra]
+# App title and layout
+st.set_page_config(page_title="Infra Product Viewer", layout="wide")
 
-# Show product names and notes
-filtered_df[['Product', 'Notes']]
+st.title("🛠️ Infra Product Landscape Viewer")
+st.caption("Explore infrastructure tools by category, use case, and product.")
+
+# Sidebar filter
+with st.sidebar:
+    st.header("🔍 Filters")
+    category = st.selectbox("Select Infra Category", ["All"] + sorted(df["Infra Category"].dropna().unique()))
+
+# Filter dataframe
+if category != "All":
+    filtered_df = df[df["Infra Category"] == category]
+else:
+    filtered_df = df
+
+# Tabs for switching between views
+tab1, tab2 = st.tabs(["📊 Chart", "📋 Table"])
+
+with tab1:
+    if not filtered_df.empty:
+        chart_data = filtered_df["Infra Category"].value_counts().reset_index()
+        chart_data.columns = ["Infra Category", "Count"]
+        fig = px.bar(chart_data, x="Infra Category", y="Count", title="Products per Infra Category", color="Infra Category")
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.warning("No data for selected category.")
+
+with tab2:
+    st.dataframe(filtered_df[["Product", "Notes"]].reset_index(drop=True), use_container_width=True)
+
+
 
