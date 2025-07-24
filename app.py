@@ -12,7 +12,7 @@ df.info()
 # Check for any nulls
 df.isnull().sum()
 
-!pip install plotly
+
 import plotly.express as px
 
 # Bar chart: Number of products per infra category
