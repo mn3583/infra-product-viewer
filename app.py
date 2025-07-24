@@ -5,24 +5,32 @@ import plotly.express as px
 # Load your data
 df = pd.read_csv("api_landscape.csv")
 
-# App title and layout
-st.set_page_config(page_title="Infra Product Viewer", layout="wide")
-
+# App config
+st.set_page_config(page_title="Infra Product Landscape Viewer", layout="wide")
 st.title("🛠️ Infra Product Landscape Viewer")
 st.caption("Explore infrastructure tools by category, use case, and product.")
 
-# Sidebar filter
+# Sidebar: category selector
 with st.sidebar:
     st.header("🔍 Filters")
     category = st.selectbox("Select Infra Category", ["All"] + sorted(df["Infra Category"].dropna().unique()))
+    keyword = st.text_input("Search products or notes")
 
-# Filter dataframe
+# Filter by category
 if category != "All":
     filtered_df = df[df["Infra Category"] == category]
 else:
-    filtered_df = df
+    filtered_df = df.copy()
 
-# Tabs for switching between views
+# Filter by keyword
+if keyword:
+    keyword = keyword.lower()
+    filtered_df = filtered_df[
+        filtered_df["Product"].str.lower().str.contains(keyword)
+        | filtered_df["Notes"].str.lower().str.contains(keyword)
+    ]
+
+# Tabs for chart and table
 tab1, tab2 = st.tabs(["📊 Chart", "📋 Table"])
 
 with tab1:
@@ -32,10 +40,12 @@ with tab1:
         fig = px.bar(chart_data, x="Infra Category", y="Count", title="Products per Infra Category", color="Infra Category")
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.warning("No data for selected category.")
+        st.warning("No data matches your filters.")
 
 with tab2:
-    st.dataframe(filtered_df[["Product", "Notes"]].reset_index(drop=True), use_container_width=True)
-
+    if not filtered_df.empty:
+        st.dataframe(filtered_df[["Product", "Notes"]].reset_index(drop=True), use_container_width=True)
+    else:
+        st.info("No results to display.")
 
 
